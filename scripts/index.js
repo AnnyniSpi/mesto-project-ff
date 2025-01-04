@@ -6,25 +6,31 @@ const content = document.querySelector('.content'),
       saveButton =  popup.querySelector('.popup__button'),
       template = document.querySelector('#card-template').content;
 
+function createCard(card, deleteFunction) {
+  const cardElement = template.querySelector('.card').cloneNode(true);
+  const cardImage = cardElement.querySelector('.card__image');
+  const cardTitle = cardElement.querySelector('.card__title');
+  const deleteCardButton = cardElement.querySelector('.card__delete-button');
+
+  cardImage.src = card.link;
+  cardImage.alt = card.name;
+  cardTitle.textContent = card.name;
+
+  deleteCardButton.addEventListener('click', () => deleteFunction(cardElement));
+
+  return cardElement;
+}
+
+function deleteCard(card) {
+  card.remove();
+}
 
 function renderCards(cards) {
   list.replaceChildren();
 
-  for(let i = 0; i < cards.length; i++){
-    let cardElement = template.querySelector('.card').cloneNode(true);
-    cardElement.querySelector('.card__image').src = cards[i].link;
-    cardElement.querySelector('.card__title').textContent = cards[i].name;
-
-    deleteCard(cardElement);
-    list.append(cardElement);
-  }
-}
-
-function deleteCard(card) {
-  const deleteCardButton = card.querySelector('.card__delete-button');
-
-  deleteCardButton.addEventListener('click', () => {
-    card.remove();
+  cards.forEach(item => {
+    const card = createCard(item, deleteCard)
+    list.append(card);
   });
 }
 
@@ -52,3 +58,4 @@ saveButton.addEventListener('click', (e) => {
 });
 
 renderCards(initialCards);
+
